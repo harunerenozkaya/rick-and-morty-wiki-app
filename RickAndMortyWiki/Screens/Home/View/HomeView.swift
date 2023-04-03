@@ -8,6 +8,8 @@
 import UIKit
 
 class HomeView : UIViewController {
+    let vm = HomeViewModel()
+    
     let scrollview : UIScrollView = {
         let scrollview = UIScrollView(frame: .zero)
         scrollview.backgroundColor = .init(named: "mainBackgroundColor")
@@ -53,8 +55,8 @@ class HomeView : UIViewController {
         locationsArea.showsHorizontalScrollIndicator = false
         return locationsArea
     }()
-
-    let charactersArea: UIStackView = {
+    
+    var charactersArea: UIStackView = {
         let charactersArea = UIStackView()
         charactersArea.axis = .vertical
         charactersArea.translatesAutoresizingMaskIntoConstraints = false
@@ -66,9 +68,10 @@ class HomeView : UIViewController {
         let locationsContainer = UIStackView()
         locationsContainer.axis = .horizontal
         locationsContainer.spacing = 10
-        locationsContainer.translatesAutoresizingMaskIntoConstraints = false
         locationsContainer.distribution = .fillProportionally
-        
+        locationsContainer.layoutMargins = .init(top: 0, left: 20, bottom: 0, right: 20)
+        locationsContainer.isLayoutMarginsRelativeArrangement = true
+        locationsContainer.translatesAutoresizingMaskIntoConstraints = false
         return locationsContainer
     }()
     
@@ -78,13 +81,6 @@ class HomeView : UIViewController {
         label.textColor = .init(named: "dirtyWhite")
         label.font = AppFonts.subtitle
         return label
-    }()
-    
-    let red: UIView = {
-        let view = UIView()
-        view.backgroundColor = .red
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
     }()
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -101,13 +97,15 @@ class HomeView : UIViewController {
         configureCommon()
         
         let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-         
+        
         if(UIDevice.current.orientation == .portrait || windowScene?.interfaceOrientation == .portrait ){
             configurePortrait()
         }
         else if (UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight || windowScene?.interfaceOrientation == .landscapeLeft || windowScene?.interfaceOrientation == .landscapeRight){
             configureLandscape()
         }
+        
+        vm.setCharacters(missingText: missingLocationLbl , charactersArea: charactersArea)
     }
     
     func configureCommon(){
@@ -169,9 +167,7 @@ class HomeView : UIViewController {
         
         // Characters Area
         charactersArea.removeFromSuperview()
-        informationArea.addArrangedSubview(charactersArea)
-        charactersArea.addArrangedSubview(missingLocationLbl)
-        
+        informationArea.addArrangedSubview(charactersArea)        
         
         //Locations Container
         locationsContainer.removeFromSuperview()
@@ -194,12 +190,6 @@ class HomeView : UIViewController {
         locationsContainer.addArrangedSubview(LocationComp(title: "sadad"))
         locationsContainer.addArrangedSubview(LocationComp(title: "qdqwdqwd"))
         locationsContainer.addArrangedSubview(LocationComp(title: "Selawefdm"))
-     
-        
-        
-        
-        
-        
         
     }
     
