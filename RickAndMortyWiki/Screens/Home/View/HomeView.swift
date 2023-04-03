@@ -13,7 +13,16 @@ class HomeView : UIViewController {
         scrollview.backgroundColor = .init(named: "mainBackgroundColor")
         scrollview.bounces = true
         scrollview.autoresizingMask = []
+        scrollview.translatesAutoresizingMaskIntoConstraints = false
         return scrollview
+    }()
+    
+    let container : UIStackView = {
+        let container = UIStackView()
+        container.axis = .vertical
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.spacing = 10
+        return container
     }()
     
     let titleArea : UIView = {
@@ -22,9 +31,11 @@ class HomeView : UIViewController {
         return titleArea
     }()
     
-    let informationArea : UIView = {
-        let informationArea = UIView()
-        informationArea.backgroundColor = .green
+    let informationArea : UIStackView = {
+        let informationArea = UIStackView()
+        informationArea.axis = .vertical
+        informationArea.spacing = 10
+        informationArea.distribution = .fill
         informationArea.translatesAutoresizingMaskIntoConstraints = false
         return informationArea
     }()
@@ -35,10 +46,48 @@ class HomeView : UIViewController {
         return titleImage
     }()
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        scrollview.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        scrollview.contentSize = size
+    let locationsArea: UIScrollView = {
+        let locationsArea = UIScrollView()
+        locationsArea.translatesAutoresizingMaskIntoConstraints = false
+        locationsArea.bounces = true
+        locationsArea.showsHorizontalScrollIndicator = false
+        return locationsArea
+    }()
+
+    let charactersArea: UIStackView = {
+        let charactersArea = UIStackView()
+        charactersArea.axis = .vertical
+        charactersArea.translatesAutoresizingMaskIntoConstraints = false
+        charactersArea.alignment = .center
+        return charactersArea
+    }()
+    
+    let locationsContainer : UIStackView = {
+        let locationsContainer = UIStackView()
+        locationsContainer.axis = .horizontal
+        locationsContainer.spacing = 10
+        locationsContainer.translatesAutoresizingMaskIntoConstraints = false
+        locationsContainer.distribution = .fillProportionally
         
+        return locationsContainer
+    }()
+    
+    let missingLocationLbl : UILabel = {
+        let label = UILabel()
+        label.text = "Select a location"
+        label.textColor = .init(named: "dirtyWhite")
+        label.font = AppFonts.subtitle
+        return label
+    }()
+    
+    let red: UIView = {
+        let view = UIView()
+        view.backgroundColor = .red
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         //Set constrainst according to orientation
         if(UIDevice.current.orientation == .portrait){
             configurePortrait()
@@ -66,29 +115,38 @@ class HomeView : UIViewController {
         
         //Scroll View
         self.view.addSubview(scrollview)
-        scrollview.frame = self.view.bounds
-        scrollview.contentSize = self.view.bounds.size
+        NSLayoutConstraint.activate([
+            scrollview.topAnchor.constraint(equalTo: self.view.topAnchor),
+            scrollview.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            scrollview.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            scrollview.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ])
+        
+        //Container
+        scrollview.addSubview(container)
+        NSLayoutConstraint.activate([
+            container.leadingAnchor.constraint(equalTo: scrollview.leadingAnchor),
+            container.trailingAnchor.constraint(equalTo: scrollview.trailingAnchor),
+            container.topAnchor.constraint(equalTo: scrollview.topAnchor),
+            container.bottomAnchor.constraint(equalTo: scrollview.bottomAnchor),
+            container.widthAnchor.constraint(equalTo: scrollview.widthAnchor)
+        ])
+        
     }
     
     func configurePortrait() {
         //Title Area
         titleArea.removeFromSuperview()
-        scrollview.addSubview(titleArea)
+        container.addArrangedSubview(titleArea)
         NSLayoutConstraint.activate([
-            titleArea.topAnchor.constraint(equalTo: scrollview.topAnchor),
-            titleArea.leadingAnchor.constraint(equalTo: scrollview.leadingAnchor),
-            titleArea.widthAnchor.constraint(equalTo: scrollview.widthAnchor),
-            titleArea.heightAnchor.constraint(equalTo: scrollview.heightAnchor, multiplier: 0.1)
+            titleArea.heightAnchor.constraint(equalTo: self.view.widthAnchor , multiplier: 0.17)
         ])
         
         //Information Area
         informationArea.removeFromSuperview()
-        scrollview.addSubview(informationArea)
+        container.addArrangedSubview(informationArea)
         NSLayoutConstraint.activate([
-            informationArea.topAnchor.constraint(equalTo: titleArea.bottomAnchor),
-            informationArea.leadingAnchor.constraint(equalTo: scrollview.leadingAnchor),
-            informationArea.widthAnchor.constraint(equalTo: scrollview.widthAnchor),
-            informationArea.heightAnchor.constraint(equalTo: scrollview.heightAnchor, multiplier: 0.9)
+            informationArea.heightAnchor.constraint(greaterThanOrEqualTo: self.view.heightAnchor, multiplier: 0.8)
         ])
         
         //Title Image
@@ -101,6 +159,48 @@ class HomeView : UIViewController {
             titleImage.widthAnchor.constraint(equalTo: titleArea.widthAnchor, multiplier: 0.6),
             titleImage.heightAnchor.constraint(equalTo: titleArea.heightAnchor , multiplier: 0.8)
         ])
+        
+        // Locations Area (Scroll)
+        locationsArea.removeFromSuperview()
+        informationArea.addArrangedSubview(locationsArea)
+        NSLayoutConstraint.activate([
+            locationsArea.heightAnchor.constraint(equalTo: self.view.heightAnchor ,multiplier: 0.05),
+        ])
+        
+        // Characters Area
+        charactersArea.removeFromSuperview()
+        informationArea.addArrangedSubview(charactersArea)
+        charactersArea.addArrangedSubview(missingLocationLbl)
+        
+        
+        //Locations Container
+        locationsContainer.removeFromSuperview()
+        locationsArea.addSubview(locationsContainer)
+        NSLayoutConstraint.activate([
+            locationsContainer.leadingAnchor.constraint(equalTo: locationsArea.leadingAnchor),
+            locationsContainer.trailingAnchor.constraint(equalTo: locationsArea.trailingAnchor),
+            locationsContainer.topAnchor.constraint(equalTo: locationsArea.topAnchor),
+            locationsContainer.bottomAnchor.constraint(equalTo: locationsArea.bottomAnchor),
+            locationsContainer.heightAnchor.constraint(equalTo: locationsArea.heightAnchor)
+        ])
+        
+        locationsContainer.addArrangedSubview(LocationComp(title: "Selam"))
+        locationsContainer.addArrangedSubview(LocationComp(title: "Merhaba"))
+        locationsContainer.addArrangedSubview(LocationComp(title: "asadsad"))
+        locationsContainer.addArrangedSubview(LocationComp(title: "ewedw"))
+        locationsContainer.addArrangedSubview(LocationComp(title: "e"))
+        locationsContainer.addArrangedSubview(LocationComp(title: "asdasd"))
+        locationsContainer.addArrangedSubview(LocationComp(title: "wefwefwefwef"))
+        locationsContainer.addArrangedSubview(LocationComp(title: "sadad"))
+        locationsContainer.addArrangedSubview(LocationComp(title: "qdqwdqwd"))
+        locationsContainer.addArrangedSubview(LocationComp(title: "Selawefdm"))
+     
+        
+        
+        
+        
+        
+        
     }
     
     func configureLandscape(){
