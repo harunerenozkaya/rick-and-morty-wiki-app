@@ -8,7 +8,7 @@
 import UIKit
 
 class HomeView : UIViewController {
-    let vm = HomeViewModel()
+    var vm  = HomeViewModel()
     
     let scrollview : UIScrollView = {
         let scrollview = UIScrollView(frame: .zero)
@@ -61,6 +61,8 @@ class HomeView : UIViewController {
         charactersArea.axis = .vertical
         charactersArea.translatesAutoresizingMaskIntoConstraints = false
         charactersArea.alignment = .center
+        charactersArea.spacing = 10
+        charactersArea.distribution = .fillEqually
         return charactersArea
     }()
     
@@ -82,6 +84,80 @@ class HomeView : UIViewController {
         label.font = AppFonts.subtitle
         return label
     }()
+    
+    let loadingLbl : UILabel = {
+        let label = UILabel()
+        label.text = "Loading..."
+        label.textColor = .init(named: "dirtyWhite")
+        label.font = AppFonts.subtitle
+        return label
+    }()
+    
+    let missingCharactersLbl: UILabel = {
+        let label = UILabel()
+        label.text = "There is no residents here :("
+        label.textColor = .init(named: "dirtyWhite")
+        label.font = AppFonts.subtitle
+        return label
+    }()
+    
+    let errorCharacterLbl: UILabel = {
+        let label = UILabel()
+        label.text = "An error has occured :("
+        label.textColor = .init(named: "dirtyWhite")
+        label.font = AppFonts.subtitle
+        return label
+    }()
+    
+    func getData(){
+        Task{
+            await vm.fetchLocations()
+            for i in vm.fetchedLocations{
+                self.locationsContainer.addArrangedSubview(LocationComp(title: i.name , id: i.id){id in
+                    
+                    let fetchTask = Task{
+                        
+                        await self.vm.fetchCharacters(locationId:id)
+                        
+                        for k in self.charactersArea.arrangedSubviews{
+                            k.removeFromSuperview()
+                        }
+                        
+                        if (self.vm.characterStatus == .LOADING){
+                            self.charactersArea.addArrangedSubview(self.loadingLbl)
+                            return self.vm.characterStatus
+                        }
+                        else if (self.vm.characterStatus == .ERROR){
+                            self.charactersArea.addArrangedSubview(self.errorCharacterLbl)
+                            return self.vm.characterStatus
+                        }
+                        else{
+                            for j in self.vm.fetchedCharacters{
+                                let lbl = UILabel()
+                                lbl.text = j.name
+                                self.charactersArea.addArrangedSubview(lbl)
+                            }
+                            
+                            return self.vm.characterStatus
+                        }
+                    }
+                    
+                    //If server doesn't respond then time out
+                    Task {
+                        try await Task.sleep(nanoseconds: 5 * NSEC_PER_SEC)
+                        
+                        if await (fetchTask.result == .success(.LOADING)){
+                            for k in self.charactersArea.arrangedSubviews{
+                                k.removeFromSuperview()
+                            }
+                            self.charactersArea.addArrangedSubview(self.missingCharactersLbl)
+                        }
+                        fetchTask.cancel()
+                    }
+                })
+            }
+        }
+    }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         //Set constrainst according to orientation
@@ -105,7 +181,7 @@ class HomeView : UIViewController {
             configureLandscape()
         }
         
-        vm.setCharacters(missingText: missingLocationLbl , charactersArea: charactersArea)
+        getData()
     }
     
     func configureCommon(){
@@ -167,7 +243,8 @@ class HomeView : UIViewController {
         
         // Characters Area
         charactersArea.removeFromSuperview()
-        informationArea.addArrangedSubview(charactersArea)        
+        informationArea.addArrangedSubview(charactersArea)
+        charactersArea.addArrangedSubview(missingLocationLbl)
         
         //Locations Container
         locationsContainer.removeFromSuperview()
@@ -180,16 +257,7 @@ class HomeView : UIViewController {
             locationsContainer.heightAnchor.constraint(equalTo: locationsArea.heightAnchor)
         ])
         
-        locationsContainer.addArrangedSubview(LocationComp(title: "Selam"))
-        locationsContainer.addArrangedSubview(LocationComp(title: "Merhaba"))
-        locationsContainer.addArrangedSubview(LocationComp(title: "asadsad"))
-        locationsContainer.addArrangedSubview(LocationComp(title: "ewedw"))
-        locationsContainer.addArrangedSubview(LocationComp(title: "e"))
-        locationsContainer.addArrangedSubview(LocationComp(title: "asdasd"))
-        locationsContainer.addArrangedSubview(LocationComp(title: "wefwefwefwef"))
-        locationsContainer.addArrangedSubview(LocationComp(title: "sadad"))
-        locationsContainer.addArrangedSubview(LocationComp(title: "qdqwdqwd"))
-        locationsContainer.addArrangedSubview(LocationComp(title: "Selawefdm"))
+        
         
     }
     
