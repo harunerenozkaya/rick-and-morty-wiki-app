@@ -36,7 +36,7 @@ class HomeView : UIViewController {
     let informationArea : UIStackView = {
         let informationArea = UIStackView()
         informationArea.axis = .vertical
-        informationArea.spacing = 10
+        informationArea.spacing = 20
         informationArea.distribution = .fill
         informationArea.translatesAutoresizingMaskIntoConstraints = false
         return informationArea
@@ -62,7 +62,8 @@ class HomeView : UIViewController {
         charactersArea.translatesAutoresizingMaskIntoConstraints = false
         charactersArea.alignment = .center
         charactersArea.spacing = 10
-        charactersArea.distribution = .fillEqually
+        charactersArea.distribution = .equalSpacing
+        
         return charactersArea
     }()
     
@@ -132,10 +133,10 @@ class HomeView : UIViewController {
                             return self.vm.characterStatus
                         }
                         else{
+                            var count = 0
                             for j in self.vm.fetchedCharacters{
-                                let lbl = UILabel()
-                                lbl.text = j.name
-                                self.charactersArea.addArrangedSubview(lbl)
+                                self.charactersArea.addArrangedSubview(CharacterComp(id: j.id, title: j.name, gender: j.gender, image: j.image ,order: count){id in})
+                                count += 1
                             }
                             
                             return self.vm.characterStatus
@@ -219,9 +220,9 @@ class HomeView : UIViewController {
         //Information Area
         informationArea.removeFromSuperview()
         container.addArrangedSubview(informationArea)
-        NSLayoutConstraint.activate([
+        /*NSLayoutConstraint.activate([
             informationArea.heightAnchor.constraint(greaterThanOrEqualTo: self.view.heightAnchor, multiplier: 0.8)
-        ])
+        ])*/
         
         //Title Image
         titleImage.removeFromSuperview()
