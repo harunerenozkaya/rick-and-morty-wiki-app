@@ -38,6 +38,9 @@ class CharacterComp : UIView {
     }
     
     func configure(){
+        let tap = UITapGestureRecognizer(target: self, action: #selector(selectCharacter))
+        self.addGestureRecognizer(tap)
+        
         let screenRect = UIScreen.main.bounds
         let screenWidth = screenRect.size.width
         let screenHeight = screenRect.size.height

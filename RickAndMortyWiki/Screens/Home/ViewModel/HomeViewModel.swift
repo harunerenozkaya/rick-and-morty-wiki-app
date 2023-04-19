@@ -16,7 +16,16 @@ class HomeViewModel{
     private(set) var fetchedCharacters : [RMCharacterModel] = []
     private(set) var characterStatus : Status = .LOADING
     private let rmClient = RMClient()
- 
+    
+    //Navigate to home screen after the time passed
+    func showCharacterDetailScreen(_ nav : UINavigationController?,_ time : CGFloat,id : Int){
+        let detailViewController = DetailView()
+        detailViewController.id = id
+        DispatchQueue.main.asyncAfter(deadline: .now() + time) {
+            nav?.pushViewController(detailViewController, animated: true)
+        }
+    }
+    
     func fetchCharacters(locationId : Int) async {
         do {
             self.characterStatus = .LOADING

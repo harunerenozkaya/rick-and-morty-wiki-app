@@ -11,6 +11,8 @@
 		99456E5A29DB5DCE0042FD89 /* RickMortySwiftApi in Frameworks */ = {isa = PBXBuildFile; productRef = 99456E5929DB5DCE0042FD89 /* RickMortySwiftApi */; };
 		99456E5C29DD6D1E0042FD89 /* CharacterComp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99456E5B29DD6D1E0042FD89 /* CharacterComp.swift */; };
 		99456E5F29DD8A6B0042FD89 /* ImageExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99456E5E29DD8A6B0042FD89 /* ImageExt.swift */; };
+		995A464C29EDA2B9007163C2 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995A464B29EDA2B9007163C2 /* DetailViewModel.swift */; };
+		995A464F29EDA2CD007163C2 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995A464E29EDA2CD007163C2 /* DetailView.swift */; };
 		99DA1EBD29D6582400614F35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DA1EBC29D6582400614F35 /* AppDelegate.swift */; };
 		99DA1EBF29D6582400614F35 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DA1EBE29D6582400614F35 /* SceneDelegate.swift */; };
 		99DA1EC629D6582500614F35 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99DA1EC529D6582500614F35 /* Assets.xcassets */; };
@@ -25,6 +27,8 @@
 		99456E4E29DB1C570042FD89 /* LocationComp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationComp.swift; sourceTree = "<group>"; };
 		99456E5B29DD6D1E0042FD89 /* CharacterComp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterComp.swift; sourceTree = "<group>"; };
 		99456E5E29DD8A6B0042FD89 /* ImageExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExt.swift; sourceTree = "<group>"; };
+		995A464B29EDA2B9007163C2 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DetailViewModel.swift; path = ../../../../../DetailViewModel.swift; sourceTree = "<group>"; };
+		995A464E29EDA2CD007163C2 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DetailView.swift; path = ../../../../../DetailView.swift; sourceTree = "<group>"; };
 		99DA1EB929D6582400614F35 /* RickAndMortyWiki.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RickAndMortyWiki.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99DA1EBC29D6582400614F35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		99DA1EBE29D6582400614F35 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -66,6 +70,31 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		995A464929EDA280007163C2 /* CharacterDetail */ = {
+			isa = PBXGroup;
+			children = (
+				995A464D29EDA2BF007163C2 /* View */,
+				995A464A29EDA299007163C2 /* ViewModel */,
+			);
+			path = CharacterDetail;
+			sourceTree = "<group>";
+		};
+		995A464A29EDA299007163C2 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				995A464B29EDA2B9007163C2 /* DetailViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		995A464D29EDA2BF007163C2 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				995A464E29EDA2CD007163C2 /* DetailView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		99DA1EB029D6582400614F35 = {
 			isa = PBXGroup;
 			children = (
@@ -100,6 +129,7 @@
 		99DA1ED129D7600E00614F35 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				995A464929EDA280007163C2 /* CharacterDetail */,
 				99DA1EDC29D76BED00614F35 /* Home */,
 				99DA1ED229D7603A00614F35 /* Splash */,
 			);
@@ -241,6 +271,7 @@
 			files = (
 				99DA1EDB29D768A900614F35 /* AppFonts.swift in Sources */,
 				99DA1EE229D76C6600614F35 /* HomeView.swift in Sources */,
+				995A464F29EDA2CD007163C2 /* DetailView.swift in Sources */,
 				99DA1EE029D76C5B00614F35 /* HomeViewModel.swift in Sources */,
 				99DA1ED829D7609D00614F35 /* SplashViewModel.swift in Sources */,
 				99456E5C29DD6D1E0042FD89 /* CharacterComp.swift in Sources */,
@@ -248,6 +279,7 @@
 				99DA1ED629D7608000614F35 /* SplashView.swift in Sources */,
 				99DA1EBD29D6582400614F35 /* AppDelegate.swift in Sources */,
 				99DA1EBF29D6582400614F35 /* SceneDelegate.swift in Sources */,
+				995A464C29EDA2B9007163C2 /* DetailViewModel.swift in Sources */,
 				99456E5F29DD8A6B0042FD89 /* ImageExt.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

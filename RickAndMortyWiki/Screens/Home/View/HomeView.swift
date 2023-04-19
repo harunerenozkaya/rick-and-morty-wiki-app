@@ -110,45 +110,76 @@ class HomeView : UIViewController {
         return label
     }()
     
+    //If a location button is clicked set all location buttons color
+    func changeSelectedLocationStyle(_ id : Int){
+        let locationComp : [LocationComp] = self.locationsContainer.arrangedSubviews as! [LocationComp]
+        for i in locationComp{
+            if(i.id == id){
+                i.configuration?.background.backgroundColor = .init(named: "selectedLocationColor")
+                i.setAttributedTitle(.init(string: i.title!,attributes: [.font:AppFonts.location , .foregroundColor : UIColor.white]), for:.normal)
+            }
+            else{
+                i.configuration?.background.backgroundColor = .init(named: "dirtyWhite")
+                i.setAttributedTitle(.init(string: i.title!,attributes: [.font:AppFonts.location , .foregroundColor : UIColor.black]), for:.normal)
+            }
+        }
+    }
+    
+    //Setup character area such as characters or error messages
+    func setCharactersArea() -> Status{
+        if (self.vm.characterStatus == .LOADING){
+            self.charactersArea.addArrangedSubview(self.loadingLbl)
+            self.loadingLbl.topAnchor.constraint(equalTo: self.charactersArea.topAnchor,constant: 10).isActive = true
+            return self.vm.characterStatus
+        }
+        else if (self.vm.characterStatus == .ERROR){
+            self.charactersArea.addArrangedSubview(self.errorCharacterLbl)
+            self.errorCharacterLbl.topAnchor.constraint(equalTo: self.charactersArea.topAnchor,constant: 10).isActive = true
+            return self.vm.characterStatus
+        }
+        else{
+            var count = 0
+            for j in self.vm.fetchedCharacters{
+                //Place character views
+                self.charactersArea.addArrangedSubview(CharacterComp(id: j.id, title: j.name, gender: j.gender, image: j.image ,order: count){id in
+                    self.vm.showCharacterDetailScreen(self.navigationController, 1, id: id)
+                })
+                count += 1
+            }
+            
+            return self.vm.characterStatus
+        }
+    }
+    
+    //Fetch character and location from service
     func getData(){
         Task{
             await vm.fetchLocations()
             for i in vm.fetchedLocations{
+                //Place location buttons
                 self.locationsContainer.addArrangedSubview(LocationComp(title: i.name , id: i.id){id in
+                
+                    //Change clicked button style
+                    self.changeSelectedLocationStyle(id)
                     
                     let fetchTask = Task{
                         for k in self.charactersArea.arrangedSubviews{
                             k.removeFromSuperview()
                         }
-                        
+                        //Remove old characters and place loading label
                         self.charactersArea.addArrangedSubview(self.loadingLbl)
                         self.loadingLbl.topAnchor.constraint(equalTo: self.charactersArea.topAnchor,constant: 10).isActive = true
                         
+                        //Fetch characters
                         await self.vm.fetchCharacters(locationId:id)
                         
+                        //Remove loading label
                         for k in self.charactersArea.arrangedSubviews{
                             k.removeFromSuperview()
                         }
                         
-                        if (self.vm.characterStatus == .LOADING){
-                            self.charactersArea.addArrangedSubview(self.loadingLbl)
-                            self.loadingLbl.topAnchor.constraint(equalTo: self.charactersArea.topAnchor,constant: 10).isActive = true
-                            return self.vm.characterStatus
-                        }
-                        else if (self.vm.characterStatus == .ERROR){
-                            self.charactersArea.addArrangedSubview(self.errorCharacterLbl)
-                            self.errorCharacterLbl.topAnchor.constraint(equalTo: self.charactersArea.topAnchor,constant: 10).isActive = true
-                            return self.vm.characterStatus
-                        }
-                        else{
-                            var count = 0
-                            for j in self.vm.fetchedCharacters{
-                                self.charactersArea.addArrangedSubview(CharacterComp(id: j.id, title: j.name, gender: j.gender, image: j.image ,order: count){id in})
-                                count += 1
-                            }
-                            
-                            return self.vm.characterStatus
-                        }
+                        //Set characters area
+                        return self.setCharactersArea()
                     }
                     
                     //If server doesn't respond then time out
@@ -169,6 +200,7 @@ class HomeView : UIViewController {
         }
     }
     
+    //Change constraints according to device orientation
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         //Set constrainst according to orientation
         if(UIDevice.current.orientation == .portrait){
