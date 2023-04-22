@@ -10,6 +10,7 @@ import UIKit
 class DetailView : UIViewController {
     var vm  = DetailViewModel()
     var id = 0
+    var infos : [String] = []
     
     let container : UIStackView = {
         let container = UIStackView()
@@ -24,14 +25,12 @@ class DetailView : UIViewController {
     let titleAndImageArea : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        //view.backgroundColor = .red
         return view
     }()
     
     let infoArea : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        //view.backgroundColor = .green
         return view
     }()
     
@@ -45,7 +44,6 @@ class DetailView : UIViewController {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.text = "Harun Eren"
-        //lbl.backgroundColor = .blue
         lbl.textColor = .init(named: "dirtyWhite")
         lbl.font = AppFonts.characterDetailTitle
         return lbl
@@ -54,8 +52,6 @@ class DetailView : UIViewController {
     let characterImage : UIImageView = {
         let img = UIImageView()
         img.translatesAutoresizingMaskIntoConstraints = false
-        img.image = .init(named: "titleImage")
-        //img.backgroundColor = .brown
         return img
     }()
     
@@ -64,8 +60,7 @@ class DetailView : UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = 5
-        //stack.backgroundColor = .purple
-        stack.distribution = .fillEqually
+        stack.distribution = .equalSpacing
         return stack
     }()
     
@@ -79,7 +74,57 @@ class DetailView : UIViewController {
         }
     }
     
+    func getCharacterDetails(){
+        Task{
+            //Fetch character details
+            await vm.fetchCharacterDetail(id: self.id)
+            
+            //Set character detail title
+            titleLbl.text = vm.fetchedCharacter?.name
+            
+            //Set character image
+            self.characterImage.load(url: URL(string: (vm.fetchedCharacter?.image)!)!)
+            
+
+            //Parse episodes url array
+            var str : String = ""
+            for i in vm.fetchedCharacter!.episode{
+                str += i.components(separatedBy: "episode/")[1].components(separatedBy: "\\")[0] + ","
+            }
+            str.removeLast()
+                
+            //Set character information
+            infos.append("Status : " + (vm.fetchedCharacter?.status ?? ""))
+            infos.append("Specy : " + (vm.fetchedCharacter?.species.description ?? ""))
+            infos.append("Gender : " + (vm.fetchedCharacter?.gender ?? ""))
+            infos.append("Origin : " + (vm.fetchedCharacter?.origin.name ?? ""))
+            infos.append("Location : " + (vm.fetchedCharacter?.location.name ?? ""))
+            infos.append("Episode : " + str)
+            
+            let timeCr = (vm.fetchedCharacter?.created ?? "").components(separatedBy: "T")
+            
+            if ( timeCr.count >= 2){
+                infos.append("Created at (in API) : " + timeCr[0] + " " + timeCr[1].dropLast(5))
+            }
+            else{
+                infos.append("Created at \n(in API) : ")
+            }
+            
+            for i in self.infos{
+                let lbl = UILabel()
+                lbl.text = i
+                lbl.textColor = .white
+                lbl.font = AppFonts.characterInfoLeft
+                lbl.numberOfLines = 2
+                
+                characterInfoStack.addArrangedSubview(lbl)
+            }
+            
+        }
+    }
+    
     override func viewDidLoad() {
+        getCharacterDetails()
         configureCommon()
         
         let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
@@ -146,18 +191,7 @@ class DetailView : UIViewController {
             characterInfoStack.leadingAnchor.constraint(equalTo: infoArea.leadingAnchor,constant: 20),
             characterInfoStack.trailingAnchor.constraint(equalTo: infoArea.trailingAnchor,constant: -20)
         ])
-        
-        let lis = ["Status : ","Specy : ","Gender : ","Origin :  ","Location : ","Episodes : ","Created at (in API) : "]
-        for i in lis{
-            
-            let lbl = UILabel()
-            lbl.text = i
-            lbl.textColor = .white
-            lbl.font = AppFonts.characterInfoLeft
-            
-            characterInfoStack.addArrangedSubview(lbl)
-        }
-        
+
     }
     
     func configureLandscape(){
