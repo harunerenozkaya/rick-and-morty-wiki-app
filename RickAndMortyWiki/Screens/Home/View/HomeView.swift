@@ -142,7 +142,7 @@ class HomeView : UIViewController {
             for j in self.vm.fetchedCharacters{
                 //Place character views
                 self.charactersArea.addArrangedSubview(CharacterComp(id: j.id, title: j.name, gender: j.gender, image: j.image ,order: count){id in
-                    self.vm.showCharacterDetailScreen(self.navigationController, 1, id: id)
+                    self.vm.showCharacterDetailScreen(self.navigationController, 0, id: id)
                 })
                 count += 1
             }
@@ -200,7 +200,7 @@ class HomeView : UIViewController {
         }
     }
     
-    //Change constraints according to device orientation
+    //Change constraints according to device orientation when rotating
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         //Set constrainst according to orientation
         if(UIDevice.current.orientation == .portrait){
