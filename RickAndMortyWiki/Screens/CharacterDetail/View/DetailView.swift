@@ -86,11 +86,11 @@ class DetailView : UIViewController {
             
             
             //Set informarion strings
-            var statusStr = "Status:\t\t" + (vm.fetchedCharacter?.status ?? "")
-            var specyStr = "Specy:\t\t" + (vm.fetchedCharacter?.species.description ?? "")
-            var genderStr = "Gender:\t\t" + (vm.fetchedCharacter?.gender ?? "")
-            var originStr = "Origin:\t\t" + (vm.fetchedCharacter?.origin.name ?? "")
-            var locationStr = "Location:\t" + (vm.fetchedCharacter?.location.name ?? "")
+            let statusStr = "Status:\t\t" + (vm.fetchedCharacter?.status ?? "")
+            let specyStr = "Specy:\t\t" + (vm.fetchedCharacter?.species.description ?? "")
+            let genderStr = "Gender:\t\t" + (vm.fetchedCharacter?.gender ?? "")
+            let originStr = "Origin:\t\t" + (vm.fetchedCharacter?.origin.name ?? "")
+            let locationStr = "Location:\t" + (vm.fetchedCharacter?.location.name ?? "")
             
             //Parse episodes url array
             var episodeStr : String = "Episode:\t"
@@ -172,7 +172,7 @@ class DetailView : UIViewController {
     
     func configurePortrait() {
         container.axis = .vertical
-        
+        navigationController?.isNavigationBarHidden = false
         //Container
         container.removeFromSuperview()
         view.addSubview(container)
@@ -227,7 +227,7 @@ class DetailView : UIViewController {
     
     func configureLandscape(){
             container.axis = .horizontal
-        
+            navigationController?.isNavigationBarHidden = false
             //Container
             container.removeFromSuperview()
             view.addSubview(container)
