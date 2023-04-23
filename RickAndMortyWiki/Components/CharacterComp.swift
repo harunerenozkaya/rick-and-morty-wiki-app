@@ -101,8 +101,8 @@ class CharacterComp : UIView {
         }
         
         NSLayoutConstraint.activate([
-            img.widthAnchor.constraint(equalToConstant: 100),
-            img.heightAnchor.constraint(equalToConstant: 100)])
+            img.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.8),
+            img.widthAnchor.constraint(equalTo: img.heightAnchor)])
     }
     
     @objc func selectCharacter() {
