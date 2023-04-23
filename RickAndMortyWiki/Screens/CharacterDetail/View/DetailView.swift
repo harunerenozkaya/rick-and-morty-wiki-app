@@ -43,7 +43,6 @@ class DetailView : UIViewController {
     let titleLbl : UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
-        lbl.text = "Harun Eren"
         lbl.textColor = .init(named: "dirtyWhite")
         lbl.font = AppFonts.characterDetailTitle
         return lbl
@@ -140,6 +139,7 @@ class DetailView : UIViewController {
                 lbl.numberOfLines = 2
                 lbl.attributedText = attributedString
                 
+            
                 characterInfoStack.addArrangedSubview(lbl)
             }
             
@@ -171,7 +171,10 @@ class DetailView : UIViewController {
     }
     
     func configurePortrait() {
+        container.axis = .vertical
+        
         //Container
+        container.removeFromSuperview()
         view.addSubview(container)
         NSLayoutConstraint.activate([
             container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -181,16 +184,19 @@ class DetailView : UIViewController {
         ])
         
         //Top area
+        titleAndImageArea.removeFromSuperview()
         container.addArrangedSubview(titleAndImageArea)
         NSLayoutConstraint.activate([
             titleAndImageArea.heightAnchor.constraint(equalTo: container.heightAnchor, multiplier: 0.55)
         ])
         
         //Info area
+        infoArea.removeFromSuperview()
         container.addArrangedSubview(infoArea)
         
         
-        //Character Imge
+        //Character Image
+        characterImage.removeFromSuperview()
         titleAndImageArea.addSubview(characterImage)
         NSLayoutConstraint.activate([
             characterImage.heightAnchor.constraint(equalToConstant: 275),
@@ -200,6 +206,7 @@ class DetailView : UIViewController {
         ])
         
         //Title
+        titleLbl.removeFromSuperview()
         titleAndImageArea.addSubview(titleLbl)
         NSLayoutConstraint.activate([
             titleLbl.bottomAnchor.constraint(equalTo: characterImage.topAnchor,constant: -20),
@@ -207,6 +214,7 @@ class DetailView : UIViewController {
         ])
         
         //Character Info Stack
+        characterInfoStack.removeFromSuperview()
         infoArea.addSubview(characterInfoStack)
         NSLayoutConstraint.activate([
             characterInfoStack.topAnchor.constraint(equalTo: infoArea.topAnchor),
@@ -218,6 +226,55 @@ class DetailView : UIViewController {
     }
     
     func configureLandscape(){
+            container.axis = .horizontal
         
+            //Container
+            container.removeFromSuperview()
+            view.addSubview(container)
+            NSLayoutConstraint.activate([
+                container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                container.topAnchor.constraint(equalTo: view.topAnchor),
+                container.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            ])
+            
+            //Top area
+            titleAndImageArea.removeFromSuperview()
+            container.addArrangedSubview(titleAndImageArea)
+            NSLayoutConstraint.activate([
+                titleAndImageArea.widthAnchor.constraint(equalTo: container.widthAnchor, multiplier: 0.5)
+            ])
+            
+            //Info area
+            infoArea.removeFromSuperview()
+            container.addArrangedSubview(infoArea)
+            
+            
+            //Character Imge
+            characterImage.removeFromSuperview()
+            titleAndImageArea.addSubview(characterImage)
+            NSLayoutConstraint.activate([
+                characterImage.heightAnchor.constraint(equalToConstant: 275),
+                characterImage.leadingAnchor.constraint(equalTo: titleAndImageArea.leadingAnchor, constant: 50),
+                characterImage.trailingAnchor.constraint(equalTo: titleAndImageArea.trailingAnchor, constant: -50),
+                characterImage.bottomAnchor.constraint(equalTo: titleAndImageArea.bottomAnchor, constant: -20)
+            ])
+            
+            //Title
+            titleLbl.removeFromSuperview()
+            titleAndImageArea.addSubview(titleLbl)
+            NSLayoutConstraint.activate([
+                titleLbl.bottomAnchor.constraint(equalTo: characterImage.topAnchor,constant: -10),
+                titleLbl.centerXAnchor.constraint(equalTo: titleAndImageArea.centerXAnchor)
+            ])
+            
+            //Character Info Stack
+            characterInfoStack.removeFromSuperview()
+            infoArea.addSubview(characterInfoStack)
+            NSLayoutConstraint.activate([
+                characterInfoStack.topAnchor.constraint(equalTo: infoArea.topAnchor,constant: 40),
+                characterInfoStack.bottomAnchor.constraint(equalTo: infoArea.bottomAnchor, constant: -20),
+                
+            ])
     }
 }

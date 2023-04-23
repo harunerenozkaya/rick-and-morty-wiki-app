@@ -69,6 +69,7 @@ class HomeView : UIViewController {
     
     let locationsContainer : UIStackView = {
         let locationsContainer = UIStackView()
+        locationsContainer.alignment = .leading
         locationsContainer.axis = .horizontal
         locationsContainer.spacing = 10
         locationsContainer.distribution = .fillProportionally
@@ -138,10 +139,17 @@ class HomeView : UIViewController {
         else{
             var count = 0
             for j in self.vm.fetchedCharacters{
-                //Place character views
-                self.charactersArea.addArrangedSubview(CharacterComp(id: j.id, title: j.name, gender: j.gender, image: j.image ,order: count){id in
+                let character : CharacterComp = .init(id: j.id, title: j.name, gender: j.gender, image: j.image, order: count){id in
                     self.vm.showCharacterDetailScreen(self.navigationController, 0, id: id)
-                })
+                }
+                character.translatesAutoresizingMaskIntoConstraints = false
+                //Place character views
+                self.charactersArea.addArrangedSubview(character)
+                
+                NSLayoutConstraint.activate([
+                    character.widthAnchor.constraint(equalTo: charactersArea.widthAnchor,multiplier: 0.9),
+                    character.heightAnchor.constraint(equalTo: self.view.heightAnchor,multiplier: 0.15)
+                ])
                 count += 1
             }
         }
@@ -152,6 +160,11 @@ class HomeView : UIViewController {
     //Fetch character and location from service
     func getData(){
         Task{
+            self.charactersArea.addArrangedSubview(self.missingLocationLbl)
+            NSLayoutConstraint.activate([
+                missingLocationLbl.topAnchor.constraint(equalTo: charactersArea.topAnchor,constant: 10)
+            ])
+            
             await vm.fetchLocations()
             for i in vm.fetchedLocations{
                 //Place location buttons
@@ -198,8 +211,6 @@ class HomeView : UIViewController {
                         self.locationsContainer.isUserInteractionEnabled = true
                         fetchTask.cancel()
                     }
-                    
-                    
                 })
             }
         }
@@ -212,6 +223,7 @@ class HomeView : UIViewController {
     
     //Change constraints according to device orientation when rotating
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        configureCommon()
         //Set constrainst according to orientation
         if(UIDevice.current.orientation == .portrait){
             configurePortrait()
@@ -240,6 +252,7 @@ class HomeView : UIViewController {
         navigationController?.isNavigationBarHidden = true
         
         //Scroll View
+        scrollview.removeFromSuperview()
         self.view.addSubview(scrollview)
         NSLayoutConstraint.activate([
             scrollview.topAnchor.constraint(equalTo: self.view.topAnchor),
@@ -249,6 +262,7 @@ class HomeView : UIViewController {
         ])
         
         //Container
+        container.removeFromSuperview()
         scrollview.addSubview(container)
         NSLayoutConstraint.activate([
             container.leadingAnchor.constraint(equalTo: scrollview.leadingAnchor),
@@ -271,9 +285,6 @@ class HomeView : UIViewController {
         //Information Area
         informationArea.removeFromSuperview()
         container.addArrangedSubview(informationArea)
-        /*NSLayoutConstraint.activate([
-            informationArea.heightAnchor.constraint(greaterThanOrEqualTo: self.view.heightAnchor, multiplier: 0.8)
-        ])*/
         
         //Title Image
         titleImage.removeFromSuperview()
@@ -296,8 +307,14 @@ class HomeView : UIViewController {
         // Characters Area
         charactersArea.removeFromSuperview()
         informationArea.addArrangedSubview(charactersArea)
-        charactersArea.addArrangedSubview(missingLocationLbl)
-        
+        for i in charactersArea.arrangedSubviews{
+            i.removeFromSuperview()
+            charactersArea.addArrangedSubview(i)
+            NSLayoutConstraint.activate([
+                i.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15),
+                i.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9)
+            ])
+        }
         
         //Locations Container
         locationsContainer.removeFromSuperview()
@@ -308,11 +325,6 @@ class HomeView : UIViewController {
             locationsContainer.topAnchor.constraint(equalTo: locationsArea.topAnchor),
             locationsContainer.bottomAnchor.constraint(equalTo: locationsArea.bottomAnchor),
             locationsContainer.heightAnchor.constraint(equalTo: locationsArea.heightAnchor)
-        ])
-        
-        //Missing Location Label
-        NSLayoutConstraint.activate([
-            missingLocationLbl.topAnchor.constraint(equalTo: charactersArea.topAnchor,constant: 10)
         ])
     }
     
@@ -321,15 +333,12 @@ class HomeView : UIViewController {
         titleArea.removeFromSuperview()
         container.addArrangedSubview(titleArea)
         NSLayoutConstraint.activate([
-            titleArea.heightAnchor.constraint(equalTo: self.view.widthAnchor , multiplier: 0.17)
+            titleArea.heightAnchor.constraint(equalTo: self.view.heightAnchor , multiplier: 0.15),
         ])
         
         //Information Area
         informationArea.removeFromSuperview()
         container.addArrangedSubview(informationArea)
-        /*NSLayoutConstraint.activate([
-            informationArea.heightAnchor.constraint(greaterThanOrEqualTo: self.view.heightAnchor, multiplier: 0.8)
-        ])*/
         
         //Title Image
         titleImage.removeFromSuperview()
@@ -338,7 +347,7 @@ class HomeView : UIViewController {
             titleImage.centerXAnchor.constraint(equalTo: titleArea.centerXAnchor),
             titleImage.centerYAnchor.constraint(equalTo: titleArea.centerYAnchor),
             titleImage.widthAnchor.constraint(lessThanOrEqualTo: titleArea.widthAnchor , multiplier: 0.7),
-            titleImage.widthAnchor.constraint(equalTo: titleArea.widthAnchor, multiplier: 0.6),
+            titleImage.widthAnchor.constraint(equalTo: titleArea.widthAnchor, multiplier: 0.4),
             titleImage.heightAnchor.constraint(equalTo: titleArea.heightAnchor , multiplier: 0.8)
         ])
         
@@ -346,15 +355,21 @@ class HomeView : UIViewController {
         locationsArea.removeFromSuperview()
         informationArea.addArrangedSubview(locationsArea)
         NSLayoutConstraint.activate([
-            locationsArea.heightAnchor.constraint(equalTo: self.view.heightAnchor ,multiplier: 0.05),
+            locationsArea.heightAnchor.constraint(equalTo: self.view.heightAnchor ,multiplier: 0.1),
         ])
         
         // Characters Area
         charactersArea.removeFromSuperview()
         informationArea.addArrangedSubview(charactersArea)
-        charactersArea.addArrangedSubview(missingLocationLbl)
-        
-        
+        for i in charactersArea.arrangedSubviews{
+            i.removeFromSuperview()
+            charactersArea.addArrangedSubview(i)
+            NSLayoutConstraint.activate([
+                i.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15),
+                i.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9)
+            ])
+        }
+
         //Locations Container
         locationsContainer.removeFromSuperview()
         locationsArea.addSubview(locationsContainer)
@@ -364,11 +379,6 @@ class HomeView : UIViewController {
             locationsContainer.topAnchor.constraint(equalTo: locationsArea.topAnchor),
             locationsContainer.bottomAnchor.constraint(equalTo: locationsArea.bottomAnchor),
             locationsContainer.heightAnchor.constraint(equalTo: locationsArea.heightAnchor)
-        ])
-        
-        //Missing Location Label
-        NSLayoutConstraint.activate([
-            missingLocationLbl.topAnchor.constraint(equalTo: charactersArea.topAnchor,constant: 10)
         ])
     }
 }

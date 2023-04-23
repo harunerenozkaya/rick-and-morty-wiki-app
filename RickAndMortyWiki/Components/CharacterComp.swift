@@ -40,14 +40,14 @@ class CharacterComp : UIView {
     func configure(){
         let tap = UITapGestureRecognizer(target: self, action: #selector(selectCharacter))
         self.addGestureRecognizer(tap)
-        
+        /*
         let screenRect = UIScreen.main.bounds
         let screenWidth = screenRect.size.width
         let screenHeight = screenRect.size.height
         
         self.translatesAutoresizingMaskIntoConstraints = false
         self.widthAnchor.constraint(equalToConstant: screenWidth*0.9).isActive = true
-        self.heightAnchor.constraint(equalToConstant: screenHeight*0.15).isActive = true
+        self.heightAnchor.constraint(equalToConstant: screenHeight*0.15).isActive = true*/
         self.layer.cornerRadius = 5
         self.layer.masksToBounds = true
         
