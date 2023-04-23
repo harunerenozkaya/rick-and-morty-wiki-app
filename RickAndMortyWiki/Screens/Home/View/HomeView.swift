@@ -200,6 +200,11 @@ class HomeView : UIViewController {
         }
     }
     
+    //Hide navigation bar when coming back from detail page
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.isNavigationBarHidden = true
+    }
+    
     //Change constraints according to device orientation when rotating
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         //Set constrainst according to orientation
