@@ -130,12 +130,10 @@ class HomeView : UIViewController {
         if (self.vm.characterStatus == .LOADING){
             self.charactersArea.addArrangedSubview(self.loadingLbl)
             self.loadingLbl.topAnchor.constraint(equalTo: self.charactersArea.topAnchor,constant: 10).isActive = true
-            return self.vm.characterStatus
         }
         else if (self.vm.characterStatus == .ERROR){
             self.charactersArea.addArrangedSubview(self.errorCharacterLbl)
             self.errorCharacterLbl.topAnchor.constraint(equalTo: self.charactersArea.topAnchor,constant: 10).isActive = true
-            return self.vm.characterStatus
         }
         else{
             var count = 0
@@ -146,9 +144,9 @@ class HomeView : UIViewController {
                 })
                 count += 1
             }
-            
-            return self.vm.characterStatus
         }
+        self.locationsContainer.isUserInteractionEnabled = true
+        return self.vm.characterStatus
     }
     
     //Fetch character and location from service
@@ -158,7 +156,10 @@ class HomeView : UIViewController {
             for i in vm.fetchedLocations{
                 //Place location buttons
                 self.locationsContainer.addArrangedSubview(LocationComp(title: i.name , id: i.id){id in
-                
+                    
+                    //Make non-clickable buttons
+                    self.locationsContainer.isUserInteractionEnabled = false
+                    
                     //Change clicked button style
                     self.changeSelectedLocationStyle(id)
                     
@@ -177,9 +178,10 @@ class HomeView : UIViewController {
                         for k in self.charactersArea.arrangedSubviews{
                             k.removeFromSuperview()
                         }
-                        
+    
                         //Set characters area
                         return self.setCharactersArea()
+                        
                     }
                     
                     //If server doesn't respond then time out
@@ -193,8 +195,11 @@ class HomeView : UIViewController {
                             self.charactersArea.addArrangedSubview(self.missingCharactersLbl)
                             self.missingCharactersLbl.topAnchor.constraint(equalTo: self.charactersArea.topAnchor,constant: 10).isActive = true
                         }
+                        self.locationsContainer.isUserInteractionEnabled = true
                         fetchTask.cancel()
                     }
+                    
+                    
                 })
             }
         }
