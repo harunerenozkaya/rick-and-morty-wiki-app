@@ -85,37 +85,60 @@ class DetailView : UIViewController {
             //Set character image
             self.characterImage.load(url: URL(string: (vm.fetchedCharacter?.image)!)!)
             
-
+            
+            //Set informarion strings
+            var statusStr = "Status:\t\t" + (vm.fetchedCharacter?.status ?? "")
+            var specyStr = "Specy:\t\t" + (vm.fetchedCharacter?.species.description ?? "")
+            var genderStr = "Gender:\t\t" + (vm.fetchedCharacter?.gender ?? "")
+            var originStr = "Origin:\t\t" + (vm.fetchedCharacter?.origin.name ?? "")
+            var locationStr = "Location:\t" + (vm.fetchedCharacter?.location.name ?? "")
+            
             //Parse episodes url array
-            var str : String = ""
+            var episodeStr : String = "Episode:\t"
             for i in vm.fetchedCharacter!.episode{
-                str += i.components(separatedBy: "episode/")[1].components(separatedBy: "\\")[0] + ","
+                episodeStr += i.components(separatedBy: "episode/")[1].components(separatedBy: "\\")[0] + ","
             }
-            str.removeLast()
-                
-            //Set character information
-            infos.append("Status : " + (vm.fetchedCharacter?.status ?? ""))
-            infos.append("Specy : " + (vm.fetchedCharacter?.species.description ?? ""))
-            infos.append("Gender : " + (vm.fetchedCharacter?.gender ?? ""))
-            infos.append("Origin : " + (vm.fetchedCharacter?.origin.name ?? ""))
-            infos.append("Location : " + (vm.fetchedCharacter?.location.name ?? ""))
-            infos.append("Episode : " + str)
+            episodeStr.removeLast()
             
+            //Parse created time
+            var createdStr = ""
             let timeCr = (vm.fetchedCharacter?.created ?? "").components(separatedBy: "T")
-            
             if ( timeCr.count >= 2){
-                infos.append("Created at (in API) : " + timeCr[0] + " " + timeCr[1].dropLast(5))
+                createdStr = "Created at (in API) : " + timeCr[0] + " " + timeCr[1].dropLast(5)
             }
             else{
-                infos.append("Created at \n(in API) : ")
+                createdStr = "Created at \n(in API) : "
             }
             
+
+            //Append strings to list to place stack
+            infos.append(statusStr)
+            infos.append(specyStr)
+            infos.append(genderStr)
+            infos.append(originStr)
+            infos.append(locationStr)
+            infos.append(episodeStr)
+            infos.append(createdStr)
+            
+            //Place labels
             for i in self.infos{
+                
+                let midIndex = i.distance(from: i.startIndex, to: i.firstIndex(of: ":")!) + 1
+                let attributedString = NSMutableAttributedString(string: i)
+                
+                // Left bold
+                let boldFont = AppFonts.characterInfoLeft
+                attributedString.addAttribute(.font, value: boldFont, range: NSRange(location: 0, length: midIndex))
+
+                // Right light
+                let lightFont = AppFonts.characterInfoRight
+                attributedString.addAttribute(.font, value: lightFont, range: NSRange(location: midIndex, length: i.count - midIndex))
+
                 let lbl = UILabel()
                 lbl.text = i
                 lbl.textColor = .white
-                lbl.font = AppFonts.characterInfoLeft
                 lbl.numberOfLines = 2
+                lbl.attributedText = attributedString
                 
                 characterInfoStack.addArrangedSubview(lbl)
             }

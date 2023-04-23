@@ -14,4 +14,5 @@ struct AppFonts{
     static let location = UIFont(name: "Avenir", size: 20)!
     static let characterDetailTitle = UIFont(name: "Avenir", size: 32)!
     static let characterInfoLeft = UIFont(name: "Avenir-Medium", size: 22)!
+    static let characterInfoRight = UIFont(name: "Avenir-Light", size: 22)!
 }
