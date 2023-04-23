@@ -40,14 +40,6 @@ class CharacterComp : UIView {
     func configure(){
         let tap = UITapGestureRecognizer(target: self, action: #selector(selectCharacter))
         self.addGestureRecognizer(tap)
-        /*
-        let screenRect = UIScreen.main.bounds
-        let screenWidth = screenRect.size.width
-        let screenHeight = screenRect.size.height
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
-        self.widthAnchor.constraint(equalToConstant: screenWidth*0.9).isActive = true
-        self.heightAnchor.constraint(equalToConstant: screenHeight*0.15).isActive = true*/
         self.layer.cornerRadius = 5
         self.layer.masksToBounds = true
         
@@ -66,7 +58,6 @@ class CharacterComp : UIView {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
-        stack.distribution = .fillProportionally
         stack.alignment = .center
         self.addSubview(stack)
         NSLayoutConstraint.activate([
@@ -102,7 +93,8 @@ class CharacterComp : UIView {
         
         NSLayoutConstraint.activate([
             img.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.8),
-            img.widthAnchor.constraint(equalTo: img.heightAnchor)])
+            img.widthAnchor.constraint(equalTo: img.heightAnchor),
+        ])
     }
     
     @objc func selectCharacter() {

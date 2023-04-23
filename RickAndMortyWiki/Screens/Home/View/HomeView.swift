@@ -130,11 +130,9 @@ class HomeView : UIViewController {
     func setCharactersArea() -> Status{
         if (self.vm.characterStatus == .LOADING){
             self.charactersArea.addArrangedSubview(self.loadingLbl)
-            self.loadingLbl.topAnchor.constraint(equalTo: self.charactersArea.topAnchor,constant: 10).isActive = true
         }
         else if (self.vm.characterStatus == .ERROR){
             self.charactersArea.addArrangedSubview(self.errorCharacterLbl)
-            self.errorCharacterLbl.topAnchor.constraint(equalTo: self.charactersArea.topAnchor,constant: 10).isActive = true
         }
         else{
             var count = 0
@@ -161,9 +159,6 @@ class HomeView : UIViewController {
     func getData(){
         Task{
             self.charactersArea.addArrangedSubview(self.missingLocationLbl)
-            NSLayoutConstraint.activate([
-                missingLocationLbl.topAnchor.constraint(equalTo: charactersArea.topAnchor,constant: 10)
-            ])
             
             await vm.fetchLocations()
             for i in vm.fetchedLocations{
@@ -182,7 +177,6 @@ class HomeView : UIViewController {
                         }
                         //Remove old characters and place loading label
                         self.charactersArea.addArrangedSubview(self.loadingLbl)
-                        self.loadingLbl.topAnchor.constraint(equalTo: self.charactersArea.topAnchor,constant: 10).isActive = true
                         
                         //Fetch characters
                         await self.vm.fetchCharacters(locationId:id)
@@ -206,7 +200,6 @@ class HomeView : UIViewController {
                                 k.removeFromSuperview()
                             }
                             self.charactersArea.addArrangedSubview(self.missingCharactersLbl)
-                            self.missingCharactersLbl.topAnchor.constraint(equalTo: self.charactersArea.topAnchor,constant: 10).isActive = true
                         }
                         self.locationsContainer.isUserInteractionEnabled = true
                         fetchTask.cancel()
@@ -310,10 +303,12 @@ class HomeView : UIViewController {
         for i in charactersArea.arrangedSubviews{
             i.removeFromSuperview()
             charactersArea.addArrangedSubview(i)
-            NSLayoutConstraint.activate([
-                i.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15),
-                i.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9)
-            ])
+            if(i is CharacterComp){
+                NSLayoutConstraint.activate([
+                    i.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15),
+                    i.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9)
+                ])
+            }
         }
         
         //Locations Container
@@ -364,10 +359,12 @@ class HomeView : UIViewController {
         for i in charactersArea.arrangedSubviews{
             i.removeFromSuperview()
             charactersArea.addArrangedSubview(i)
-            NSLayoutConstraint.activate([
-                i.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15),
-                i.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9)
-            ])
+            if(i is CharacterComp){
+                NSLayoutConstraint.activate([
+                    i.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15),
+                    i.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9)
+                ])
+            }
         }
 
         //Locations Container
