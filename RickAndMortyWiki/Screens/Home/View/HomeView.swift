@@ -7,8 +7,9 @@
 
 import UIKit
 
-class HomeView : UIViewController {
+class HomeView : UIViewController , UIScrollViewDelegate{
     var vm  = HomeViewModel()
+    var maxLocationsPageNumber = 1
     
     let scrollview : UIScrollView = {
         let scrollview = UIScrollView(frame: .zero)
@@ -53,6 +54,7 @@ class HomeView : UIViewController {
         locationsArea.translatesAutoresizingMaskIntoConstraints = false
         locationsArea.bounces = true
         locationsArea.showsHorizontalScrollIndicator = false
+        locationsArea.scrollsToTop = true
         return locationsArea
     }()
     
@@ -111,18 +113,41 @@ class HomeView : UIViewController {
         return label
     }()
     
+    let loadingLocationDotsLbl : UILabel = {
+        let label = UILabel()
+        label.text = "..."
+        label.textColor = .white
+        label.font = AppFonts.title
+        return label
+    }()
+    
+    //When locations scroll scrolled right most, update location list after delay
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.x + scrollView.frame.size.width > scrollView.contentSize.width && self.locationsContainer.arrangedSubviews.last is LocationComp {
+            self.locationsContainer.addArrangedSubview(loadingLocationDotsLbl)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.maxLocationsPageNumber += 1
+                self.getData()
+            }
+        }
+    }
+    
     //If a location button is clicked set all location buttons color
     func changeSelectedLocationStyle(_ id : Int){
-        let locationComp : [LocationComp] = self.locationsContainer.arrangedSubviews as! [LocationComp]
-        for i in locationComp{
-            if(i.id == id){
-                i.configuration?.background.backgroundColor = .init(named: "selectedLocationColor")
-                i.setAttributedTitle(.init(string: i.title!,attributes: [.font:AppFonts.location , .foregroundColor : UIColor.white]), for:.normal)
+
+        for i in self.locationsContainer.arrangedSubviews{
+            if(i is LocationComp){
+                let a = i as! LocationComp
+                if(a.id == id){
+                    a.configuration?.background.backgroundColor = .init(named: "selectedLocationColor")
+                    a.setAttributedTitle(.init(string: a.title!,attributes: [.font:AppFonts.location , .foregroundColor : UIColor.white]), for:.normal)
+                }
+                else{
+                    a.configuration?.background.backgroundColor = .init(named: "dirtyWhite")
+                    a.setAttributedTitle(.init(string: a.title!,attributes: [.font:AppFonts.location , .foregroundColor : UIColor.black]), for:.normal)
+                }
             }
-            else{
-                i.configuration?.background.backgroundColor = .init(named: "dirtyWhite")
-                i.setAttributedTitle(.init(string: i.title!,attributes: [.font:AppFonts.location , .foregroundColor : UIColor.black]), for:.normal)
-            }
+            
         }
     }
     
@@ -158,9 +183,21 @@ class HomeView : UIViewController {
     //Fetch character and location from service
     func getData(){
         Task{
-            self.charactersArea.addArrangedSubview(self.missingLocationLbl)
+            //Place select a location label if characters area empty
+            if(self.charactersArea.arrangedSubviews.count == 0){
+                self.charactersArea.addArrangedSubview(self.missingLocationLbl)
+            }
             
-            await vm.fetchLocations()
+            //Fetch locations from API
+            await vm.fetchLocations(maxLocationsPageNumber)
+            
+            //Delete loading labels in loading
+            for i in locationsContainer.arrangedSubviews{
+                if (i is UILabel){
+                    i.removeFromSuperview()
+                }
+            }
+            
             for i in vm.fetchedLocations{
                 //Place location buttons
                 self.locationsContainer.addArrangedSubview(LocationComp(title: i.name , id: i.id){id in
@@ -243,6 +280,7 @@ class HomeView : UIViewController {
     
     func configureCommon(){
         navigationController?.isNavigationBarHidden = true
+        locationsArea.delegate = self
         
         //Scroll View
         scrollview.removeFromSuperview()
@@ -296,6 +334,7 @@ class HomeView : UIViewController {
         NSLayoutConstraint.activate([
             locationsArea.heightAnchor.constraint(equalTo: self.view.heightAnchor ,multiplier: 0.05),
         ])
+        
         
         // Characters Area
         charactersArea.removeFromSuperview()

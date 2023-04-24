@@ -47,10 +47,10 @@ class HomeViewModel{
         }
     }
     
-    func fetchLocations() async{
+    func fetchLocations(_ pageNumber : Int) async{
         do {
             self.locationStatus = .LOADING
-            fetchedLocations = try await rmClient.location().getLocationsByPageNumber(pageNumber: 1)
+            fetchedLocations = try await rmClient.location().getLocationsByPageNumber(pageNumber: pageNumber)
             locationStatus = .DONE
         } catch (let error) {
             print(error)
