@@ -51,6 +51,7 @@ class DetailView : UIViewController {
     let characterImage : UIImageView = {
         let img = UIImageView()
         img.translatesAutoresizingMaskIntoConstraints = false
+        img.image = .init(named: "defaultCharacterImage")
         return img
     }()
     
@@ -84,7 +85,6 @@ class DetailView : UIViewController {
             //Set character image
             self.characterImage.load(url: URL(string: (vm.fetchedCharacter?.image)!)!)
             
-            
             //Set informarion strings
             let statusStr = "Status:\t\t" + (vm.fetchedCharacter?.status ?? "")
             let specyStr = "Specy:\t\t" + (vm.fetchedCharacter?.species.description ?? "")
@@ -109,7 +109,6 @@ class DetailView : UIViewController {
                 createdStr = "Created at \n(in API) : "
             }
             
-
             //Append strings to list to place stack
             infos.append(statusStr)
             infos.append(specyStr)
@@ -136,10 +135,12 @@ class DetailView : UIViewController {
                 let lbl = UILabel()
                 lbl.text = i
                 lbl.textColor = .white
-                lbl.numberOfLines = 2
                 lbl.attributedText = attributedString
                 
-            
+                if i == self.infos.last{
+                    lbl.numberOfLines = 2
+                }
+                
                 characterInfoStack.addArrangedSubview(lbl)
             }
             
@@ -274,7 +275,6 @@ class DetailView : UIViewController {
             NSLayoutConstraint.activate([
                 characterInfoStack.topAnchor.constraint(equalTo: infoArea.topAnchor,constant: 40),
                 characterInfoStack.bottomAnchor.constraint(equalTo: infoArea.bottomAnchor, constant: -20),
-                
             ])
     }
 }

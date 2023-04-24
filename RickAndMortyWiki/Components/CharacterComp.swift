@@ -76,6 +76,7 @@ class CharacterComp : UIView {
         lbl.translatesAutoresizingMaskIntoConstraints = false
         
         //Image
+        img.image = .init(named: "defaultCharacterImage")
         img.load(url: URL(string: (self.image!))!)
         
         
