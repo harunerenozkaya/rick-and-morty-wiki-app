@@ -1,9 +1,11 @@
 <h1 align="center"> Rick and Morty Wiki App </h1> <br>
-
+<p align="center">
+<img src = "screenshots/appIcon.png" height=200> &nbsp;
+</p>
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-## Table of Contents
 
+Table of Contents
 - [Introduction](#introduction)
 - [Screenshots](#screenshots)
 - [System Requirements](#system-requirements)
@@ -23,18 +25,12 @@ It is a pure native iOS app.
 <br>
 
 ## Screenshots
-    <img src = "screenshots/login.png" width=700>
-    <img src = "screenshots/allReports.png" width=700>
-    <img src = "screenshots/addReport.png" width=700>
-    <img src = "screenshots/reportDetail.png" width=700>
-    <img src = "screenshots/editReport.png" width=700>
-    <img src = "screenshots/deleteReport.png" width=700>
-    <img src = "screenshots/search1.png" width=700>
-    <img src = "screenshots/search2.png" width=700>
-    <img src = "screenshots/search3.png" width=700>
-    <img src = "screenshots/sortAscAllReports.png" width=700>
-    <img src = "screenshots/sortDescAllReports.png" width=700>
-    <img src = "screenshots/attachImage.png" width=700>
+<img src = "screenshots/splash.png" height=700> <img src = "screenshots/main_select.png" height=700>
+<img src = "screenshots/main_portrait.png" height=700> <img src = "screenshots/detail_portrait.png" height=700>
+
+<img src = "screenshots/main_landscape.png" height=350>
+
+<img src = "screenshots/detail_landscape.png" height=350>
 
 ## System Requirements
 
