@@ -22,6 +22,23 @@ class CharacterComp : UIView {
         return img
     }()
     
+    let stack : UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .horizontal
+        stack.alignment = .center
+        return stack
+    }()
+    
+    let lbl : UILabel = {
+        let lbl = UILabel()
+        lbl.textAlignment = .center
+        lbl.textColor = .black
+        lbl.font = AppFonts.title
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
     init(id : Int,title: String, gender : String, image:String, order : Int, completor : @escaping (_ id : Int) -> Void) {
         super.init(frame: .infinite)
         self.id = id
@@ -55,10 +72,6 @@ class CharacterComp : UIView {
         }
         
         //Stack
-        let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.axis = .horizontal
-        stack.alignment = .center
         self.addSubview(stack)
         NSLayoutConstraint.activate([
             stack.leadingAnchor.constraint(equalTo: self.leadingAnchor ,constant: 10),
@@ -68,12 +81,7 @@ class CharacterComp : UIView {
         ])
         
         //Label
-        let lbl = UILabel()
         lbl.text = self.title
-        lbl.textAlignment = .center
-        lbl.textColor = .black
-        lbl.font = AppFonts.title
-        lbl.translatesAutoresizingMaskIntoConstraints = false
         
         //Image
         img.image = .init(named: "defaultCharacterImage")
